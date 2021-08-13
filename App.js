@@ -1,21 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+//Libraries
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { ThemeProvider } from "styled-components/native";
+
+//Local imports
+import { theme } from './src/app_infrastructure/theme';
+
+import { AppNavigator } from './src/app_infrastructure/navigation/app_navigation/app.navigation';
 
 export default function App() {
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeProvider theme={theme}>
+      <View style={styles.overlayContainer}>
+        <AppNavigator />
+      </View>
+    </ThemeProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  overlayContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'rgba(47,163,218,.4)',
   },
 });
