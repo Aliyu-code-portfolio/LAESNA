@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 
-export const sendTrackingData = (deviceID, latitude, longitude) => {
+export const sendTrackingData = (deviceID, emergency, latitude, longitude) => {
   const firebaseConfig = {
     apiKey: 'AIzaSyC5JP7q6d4M21jrcA7R1zh6-NgtFlQMMBI',
     authDomain: 'laesna-d7c83.firebaseapp.com',
@@ -16,8 +16,10 @@ export const sendTrackingData = (deviceID, latitude, longitude) => {
   }
   firebase.firestore().collection('Tracking').add({
     deviceID: deviceID,
-    latitude: latitude,//JSON.stringify
+    emergencyType: emergency,
+    latitude: latitude,
     longitude: longitude,
+    read: 'No',
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   }).catch((e) => { console.log('Error at firebase.js') })
   return true

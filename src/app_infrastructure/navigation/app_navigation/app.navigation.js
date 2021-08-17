@@ -3,9 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from "@react-navigation/native";
 
-import { EmergencyScreen } from '../../../app_screens/emergency.screen'
+import { Settings } from '../../../app_screens/settings.screen'
 import { Chat } from '../../../app_screens/chat.screen'
-import { SettingsNavigator } from '../settings_navigation/settings.navigation'
+import { EmergencyNavigator } from '../emergency_navigation/emergency.navigation'
 
 
 const Tab = createBottomTabNavigator()
@@ -32,9 +32,9 @@ export const AppNavigator = () => (
         activeTintColor: 'red',
         inactiveTintColor: 'gray',
       }}>
-      <Tab.Screen name="Home" component={EmergencyScreen} />
+      <Tab.Screen name="Home" component={EmergencyNavigator} />
       <Tab.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
-      <Tab.Screen name="Settings" component={SettingsNavigator} />
+      <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   </NavigationContainer>
 )

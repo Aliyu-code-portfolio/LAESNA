@@ -1,18 +1,34 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Text, View, ScrollView, StyleSheet } from 'react-native'
 import { Searchbar } from "react-native-paper";
+import { GiftedChat } from 'react-native-gifted-chat'
 
 //Local imports
-import { History } from '../app_components/History'
 import { colors } from '../app_utils/color'
 import { paddingSizes } from '../app_utils/sizes'
 import { SafeArea } from '../app_utils/safe-area.component'
 
 export const Chat = () => {
-  const [message, setMessage] = useState(null)
-  const [tempMessage, setTempMessage] = useState('')
+  const [messages, setMessages] = useState([]);
 
+  useEffect(() => {
+    setMessages([
+      {
+        _id: 1,
+        text: 'Ask me anything related to emergency and i will repond swiftly',
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: 'Responder',
+          avatar: 'https://placeimg.com/140/140/any',
+        },
+      },
+    ])
+  }, [])
 
+  const onSend = useCallback((messages = []) => {
+    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+  }, [])
 
   //This sends the chat to a responder
   const sendMessage = (chat) => {
@@ -21,31 +37,12 @@ export const Chat = () => {
 
   return (
     <SafeArea>
-      <View style={styles.container}>
-        <ScrollView>
-          <History send={true} message={message} />
-        </ScrollView>
-        <Searchbar
-          icon="chat"
-          placeholder="Send a chat message"
-          value={tempMessage}
-          onChangeText={(text) => setTempMessage(text)}
-          onSubmitEditing=
-          {({ nativeEvent }) => {
-            if (!message) {
-              setMessage(nativeEvent.text)
-              setTempMessage('')
-            }
-            else {
-              sendMessage(nativeEvent.text)
-              setMessage(message + "\n" + nativeEvent.text)
-              setTempMessage('')
-            }
-          }
-          }
-
-        />
-      </View>
+      <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: 1,
+        }} />
     </SafeArea>
   )
 

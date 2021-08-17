@@ -1,60 +1,71 @@
-import React,{useState, useEffect} from 'react'
-import {Text, View,ImageBackground, StyleSheet, Button, TouchableOpacity} from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Text, View, ImageBackground, StyleSheet, Button, TouchableOpacity } from 'react-native'
 
+import { ProfileImage } from '../app_components/profile.image'
+import { SafeArea } from '../app_utils/safe-area.component'
 
-import {SafeArea} from '../app_utils/safe-area.component'
-
-export const Settings=({navigation})=>{
-    //Information
-  const [fname, setfname] = useState('')
+export const Settings = () => {
+  //Information
+  const [fname, setfname] = useState('Hamza')
   const [lname, setlname] = useState('Abubakar')
   const [age, setage] = useState(27)
   const [econtactname, setecontactname] = useState('Mahmud')
   const [enumber, setenumber] = useState('00000000000')
   const [premed, setpremed] = useState('Yes')
-  
-  return(
+
+  return (
     <SafeArea>
-    <ImageBackground
-    source= {require("../../assets/bgimg1.png")}
-    style={styles.container}>
-    <View style={styles.container}>
-    <View style={styles.text1container}>
-      <Text style={styles.text1}>Settings</Text>
-    </View>
-    <View style={styles.info}>
-      <Text style={styles.allText}>First Name: </Text><Text>{fname}</Text>
-      <Text style={styles.allText}>Last Name: </Text><Text>{lname}</Text>
-      <Text style={styles.allText}>Age: </Text><Text>{age}</Text>
-      <Text style={styles.allText}>Emergency contact Name: </Text><Text>{econtactname}</Text>
-      <Text style={styles.allText}>Emergency contact Number: </Text><Text>{enumber}</Text>
-      <Text style={styles.allText}>Pre-medical conditions: </Text><Text>{premed}</Text>
-    </View>
-    <TouchableOpacity>
-    <Button title="Edit info" 
-    onPress={() => {navigation.navigate("EditScreen")
-      }}/>
-    </TouchableOpacity>
-    </View>
-    </ImageBackground>
+      <View style={styles.container}>
+        <View style={styles.picture}>
+          <ProfileImage />
+          <Text style={{ marginVertical: 20, fontSize: 16, fontWeight: 'bold' }}>{fname + ' ' + lname}</Text>
+        </View>
+        <View style={styles.curve}>
+          <View style={styles.info}>
+            <Text style={styles.allText}>Age: </Text><Text style={styles.innerText}>{age}</Text>
+            <Text style={styles.allText}>Emergency contact Name: </Text><Text style={styles.innerText}>{econtactname}</Text>
+            <Text style={styles.allText}>Emergency contact Number: </Text><Text style={styles.innerText}>{enumber}</Text>
+            <Text style={styles.allText}>Pre-medical conditions: </Text><Text style={styles.innerText}>{premed}</Text>
+          </View>
+        </View>
+      </View>
     </SafeArea>
   )
 }
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    backgroundColor:'rgba(255,255,255,.1)',
-    width:'100%',
-    height:'100%',
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f8ff',
+    width: '100%',
+    height: '100%',
   },
-  text1container:{
-    alignItems:'center'
+  text1container: {
+    alignItems: 'center'
   },
-  info:{
-    paddingLeft:20,
+  picture: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  allText:{
+  curve: {
+    paddingTop: 20,
+    alignItems: 'center',
+    backgroundColor: '#ffa500',
+    height: 500,
+    borderRadius: 60
+  },
+  info: {
+    paddingLeft: 20,
+
+  },
+  allText: {
     color: 'blue',
-    fontWeight:'bold',
+    alignItems: 'center',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    paddingBottom: 5
+  },
+  innerText: {
+    textAlign: 'center',
+    paddingBottom: 15
   }
 })

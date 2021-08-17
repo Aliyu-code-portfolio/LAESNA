@@ -1,52 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Text,
   View,
   ImageBackground,
-  TouchableOpacity,
-  Image,
   StyleSheet,
   Platform,
   Vibration,
-  Alert,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import LottieView from "lottie-react-native";
+import * as Permissions from 'expo-permissions';
+
 
 //import from local files
-import { getDeviceID, getLocation } from '../app_services/location.services/location.scan'
-import { sendTrackingData } from '../app_services/firebase.services/firebase'
-import { AccountBackground } from '../app_infrastructure/navigation/app_navigation/app.styles'
 import { Card } from '../app_components/Card';
 import { SafeArea } from '../app_utils/safe-area.component'
-import { colors } from '../app_utils/color';
 import { fontSizes, paddingSizes, marginSizes } from '../app_utils/sizes';
 
-export const EmergencyScreen = () => {
+export const EmergencyScreen = ({ navigation }) => {
 
-  const sendDistress = () => {
-    const myDevice = getDeviceID();
-    const myLocation = getLocation();
-    setTimeout(function () {
-      if (myLocation._W.coords) {
-        const latitude = myLocation._W.coords.latitude
-        const longitude = myLocation._W.coords.longitude
-        sendTrackingData(myDevice, latitude, longitude);
-      }
-      else {
-        Alert.alert(
-          "We couldn't track your location",
-          "This could be due to LAESNA not been granted permission to access your device's location. Please accept permissions and try again",
-          [
-            {
-              text: "Ok",
-              style: "cancel"
-            }
-          ]
-        );
-
-      }
-    }, 2300);
-    vibrate()
+  const getPermission = async () => {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION)
+    if (status !== 'granted') {
+      //Pop up showing a warning here and checks for null below.
+      console.log('PERMISSION NOT GRANTED')
+      return null;
+    }
   }
 
   const vibrate = () => {
@@ -58,6 +37,9 @@ export const EmergencyScreen = () => {
     }
   };
 
+  useEffect(() => {
+    getPermission()
+  }, [])
   return (
     <ImageBackground
       source={require("../../assets/bgimg1.png")}
@@ -70,21 +52,25 @@ export const EmergencyScreen = () => {
         </Text>
         </View>
         <View style={styles.animated}>
-
-          <LottieView
-            source={require("../../assets/button.json")}
-            key="animation"
-            autoPlay
-            resizeMode='contain'
-            loop
-          />
+          <TouchableWithoutFeedback
+            onLongPress={() => {
+              vibrate()
+              navigation.navigate("EmergencySelector")
+            }}>
+            <LottieView
+              source={require("../../assets/button.json")}
+              key="animation"
+              autoPlay
+              resizeMode='contain'
+              loop
+            />
+          </TouchableWithoutFeedback>
         </View>
         <View>
           <Text style={styles.textTitle2}>Prefer to call and talk?</Text>
-          <TouchableOpacity
-            onLongPress={() => sendDistress()}><Text style={styles.text2}>
-              Pick the response team that fits your emergency
-        </Text></TouchableOpacity>
+          <Text style={styles.text2}>
+            Pick the response team that fits your emergency
+        </Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
           <Card name="Security" tel="09031335884" spacing={0} />
