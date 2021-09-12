@@ -12,9 +12,10 @@ const SelectorStack = createStackNavigator();
 export const EmergencyNavigator = () => {
   return (
     <SelectorStack.Navigator
-      headerMode="none"
+
       screenOptions={{
         ...TransitionPresets.ModalPresentationIOS,
+        headerShown: false
       }}
     >
       <SelectorStack.Screen name="Emergency" component={EmergencyScreen} />

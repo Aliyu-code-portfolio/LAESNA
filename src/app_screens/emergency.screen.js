@@ -6,25 +6,40 @@ import {
   StyleSheet,
   Platform,
   Vibration,
+  Alert,
   TouchableWithoutFeedback,
 } from 'react-native';
 import LottieView from "lottie-react-native";
-import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
+import NetInfo from "@react-native-community/netinfo";
+
 
 
 //import from local files
 import { Card } from '../app_components/Card';
 import { SafeArea } from '../app_utils/safe-area.component'
-import { fontSizes, paddingSizes, marginSizes } from '../app_utils/sizes';
+import { fontSizes, marginSizes } from '../app_utils/sizes';
 
 export const EmergencyScreen = ({ navigation }) => {
 
-  const getPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION)
-    if (status !== 'granted') {
-      //Pop up showing a warning here and checks for null below.
-      console.log('PERMISSION NOT GRANTED')
-      return null;
+
+  const checkInternet = async () => {
+    const response = await NetInfo.fetch();
+    if (response.isConnected) {
+      vibrate()
+      navigation.navigate("EmergencySelector")
+    }
+    else {
+      Alert.alert(
+        "No internet",
+        "It appears you don't have an internet connection, Try again",
+        [
+          {
+            text: "Ok",
+            style: "cancel"
+          }
+        ]
+      );
     }
   }
 
@@ -38,50 +53,58 @@ export const EmergencyScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    getPermission()
-  }, [])
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+    })();
+  }, []);
+
   return (
-    <ImageBackground
-      source={require("../../assets/bgimg1.png")}
-      style={styles.container}>
-      <View style={styles.containerOver}>
-        <View style={styles.textsContainer1}>
-          <Text style={styles.textTitle}> Emergency help needed?</Text>
-          <Text style={styles.text}>
-            Just press and hold the button to send your distress signal
+    <SafeArea>
+      <ImageBackground
+        source={require("../../assets/bgimg1.png")}
+        style={styles.container}>
+        <View style={styles.containerOver}>
+          <View style={styles.textsContainer1}>
+            <Text style={styles.textTitle}> Emergency help needed?</Text>
+            <Text style={styles.text}>
+              Just press and hold the animated button to send your distress signal
         </Text>
-        </View>
-        <View style={styles.animated}>
-          <TouchableWithoutFeedback
-            onLongPress={() => {
-              vibrate()
-              navigation.navigate("EmergencySelector")
-            }}>
-            <LottieView
-              source={require("../../assets/button.json")}
-              key="animation"
-              autoPlay
-              resizeMode='contain'
-              loop
-            />
-          </TouchableWithoutFeedback>
-        </View>
-        <View>
-          <Text style={styles.textTitle2}>Prefer to call and talk?</Text>
-          <Text style={styles.text2}>
-            Pick the response team that fits your emergency
+          </View>
+          <View style={styles.animated}>
+            <TouchableWithoutFeedback
+              onLongPress={() => {
+                checkInternet()
+              }}>
+              <LottieView
+                source={require("../../assets/button.json")}
+                key="animation"
+                autoPlay
+                resizeMode='contain'
+                loop
+              />
+            </TouchableWithoutFeedback>
+          </View>
+          <View>
+            <Text style={styles.textTitle2}>Prefer to call and talk?</Text>
+            <Text style={styles.text2}>
+              Pick the response team that fits your emergency
         </Text>
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <Card name="Security" tel="09031335884" spacing={0} />
+            <Card name="Medic" tel="08052604937" spacing={24} />
+            <Card name="Fire" tel="08050799378" spacing={24} />
+          </View>
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          <Card name="Security" tel="09031335884" spacing={0} />
-          <Card name="Medic" tel="08052604937" spacing={24} />
-          <Card name="Fire" tel="08050799378" spacing={24} />
-        </View>
-      </View>
-    </ImageBackground>
+      </ImageBackground>
+    </SafeArea>
   );
 }
-
+//work on Oswald_400Regular here
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -93,6 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,.1)',
     width: '100%',
     height: '100%',
+    paddingTop: 10,
   },
   textsContainer1: {
     alignItems: 'center',
@@ -101,6 +125,8 @@ const styles = StyleSheet.create({
   textTitle: {
     margin: marginSizes.xsm,
     marginBottom: marginSizes.sm,
+    fontFamily: 'Oswald_400Regular',
+
     fontSize: fontSizes.lg,
     fontWeight: 'bold',
     textAlign: 'center',

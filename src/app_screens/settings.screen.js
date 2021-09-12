@@ -1,31 +1,78 @@
-import React, { useState, useEffect } from 'react'
-import { Text, View, ImageBackground, StyleSheet, Button, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
+import { Text, View, Dimensions, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { Ionicons } from '@expo/vector-icons';
 
+
+import { AuthenticationContext } from '../app_services/authentication.service/authentication.context'
+import { FirebaseContext } from '../app_services/firebase.services/firebase'
 import { ProfileImage } from '../app_components/profile.image'
 import { SafeArea } from '../app_utils/safe-area.component'
 
 export const Settings = () => {
+  const { onLogout } = useContext(AuthenticationContext);
+  const { getName, getAge, getEcontactname, getEnumber, getPremed } = useContext(FirebaseContext);
   //Information
-  const [fname, setfname] = useState('Hamza')
-  const [lname, setlname] = useState('Abubakar')
-  const [age, setage] = useState(27)
-  const [econtactname, setecontactname] = useState('Mahmud')
-  const [enumber, setenumber] = useState('00000000000')
-  const [premed, setpremed] = useState('Yes')
+
+  const [fname, setfname, fnameRef] = useState(getName())
+  const [age, setage, ageRef] = useState(getAge())
+  const [econtactname, setecontactname, econtactnameRef] = useState(getEcontactname())
+  const [enumber, setenumber, enumberRef] = useState(getEnumber())
+  const [premed, setpremed, premedRef] = useState(getPremed())
 
   return (
     <SafeArea>
       <View style={styles.container}>
-        <View style={styles.picture}>
-          <ProfileImage />
-          <Text style={{ marginVertical: 20, fontSize: 16, fontWeight: 'bold' }}>{fname + ' ' + lname}</Text>
+        <View style={styles.pictureLogout}>
+          <View>
+            <ProfileImage />
+            <Text style={{ textAlign: 'center', marginVertical: 20, fontSize: 16, fontWeight: 'bold' }}>{fnameRef.current[0]}</Text>
+          </View>
+          <View style={{ position: 'absolute', top: 0, right: 0, elevation: 40, }}>
+            <TouchableOpacity style={{ borderRadius: 10, width: 45, }}
+              onPress={() => {
+                onLogout()
+              }}>
+              <Ionicons name='log-out-outline' size={40} color='red' />
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.curve}>
           <View style={styles.info}>
-            <Text style={styles.allText}>Age: </Text><Text style={styles.innerText}>{age}</Text>
-            <Text style={styles.allText}>Emergency contact Name: </Text><Text style={styles.innerText}>{econtactname}</Text>
-            <Text style={styles.allText}>Emergency contact Number: </Text><Text style={styles.innerText}>{enumber}</Text>
-            <Text style={styles.allText}>Pre-medical conditions: </Text><Text style={styles.innerText}>{premed}</Text>
+            <View style={styles.pair}>
+              <View style={styles.imgContainer}>
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'black', paddingBottom: 3 }}>My Age:</Text>
+                <TouchableOpacity
+                >
+                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{ageRef.current[0]}</Text>
+                </TouchableOpacity
+                >
+              </View>
+              <View style={styles.imgContainer}>
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'black', paddingBottom: 3 }}>Next of Kin:</Text>
+                <TouchableOpacity
+                >
+                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{econtactnameRef.current[0]}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.pair}>
+              <View style={styles.imgContainer}>
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'black', paddingBottom: 3 }}>Next of Kin Number:</Text>
+                <TouchableOpacity
+                >
+
+                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{enumberRef.current[0]}</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.imgContainer}>
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'black', paddingBottom: 3 }}>Have pemedical conditions:</Text>
+                <TouchableOpacity
+                >
+                  <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{premedRef.current[0]}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
           </View>
         </View>
       </View>
@@ -42,19 +89,35 @@ const styles = StyleSheet.create({
   text1container: {
     alignItems: 'center'
   },
-  picture: {
+  pictureLogout: {
+    paddingTop: 10,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   curve: {
-    paddingTop: 20,
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffa500',
-    height: 500,
-    borderRadius: 60
+    backgroundColor: 'lightblue',
+    height: Dimensions.get('window').height * 0.8,
+    borderRadius: 25
+  },
+  imgContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+    elevation: 60,
+    height: 130,
+    width: 100,
+    backgroundColor: '#c3cdd6',
+    position: 'relative',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  pair: {
+    flexDirection: 'row'
   },
   info: {
-    paddingLeft: 20,
 
   },
   allText: {

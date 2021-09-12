@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Text, View, ScrollView, StyleSheet } from 'react-native'
-import { Searchbar } from "react-native-paper";
 import { GiftedChat } from 'react-native-gifted-chat'
 
 //Local imports
