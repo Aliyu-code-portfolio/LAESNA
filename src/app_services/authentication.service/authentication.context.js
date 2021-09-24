@@ -43,12 +43,20 @@ export const AuthenticationContextProvider = ({ children }) => {
             .createUserWithEmailAndPassword(email, password)
             .then((u) => {
                 setUser(u);
-                //setIsLoading(false);
                 const stored = storeUserData(email, name, emcContact, emcContactNumber, age, medCon)
-                if (stored) {
-                    setError("Error: Sorry, we could not save your data");
-                    setIsLoading(false);
-                }
+                setIsLoading(false);
+                //setIsLoading(false);
+                u.updateProfile({
+                    displayName: name,
+                    photoURL: "https://trackergps.com/canvas/images/icons/avatar.jpg"
+                }).then(() => {
+                    // Update successful
+                    // ...
+                }).catch((error) => {
+                    // An error occurred
+                    // ...
+                });
+
             })
             .catch((e) => {
                 setIsLoading(false);

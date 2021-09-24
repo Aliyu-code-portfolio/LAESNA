@@ -6,9 +6,6 @@ import 'firebase/firestore';
 export const FirebaseContext = createContext();
 
 export const FirebaseContextProvider = ({ children }) => {
-  const countDown = (time) => {
-
-  }
 
   const storeUserData = (email, name, emcContact, emcContactNumber, age, medCon) => {
     const user = firebase.auth().currentUser
@@ -20,6 +17,7 @@ export const FirebaseContextProvider = ({ children }) => {
       emcContactName: emcContact,
       emcContactNumber: emcContactNumber,
       medCondition: medCon,
+      uid: uid,
       createdAccountAt: firebase.firestore.FieldValue.serverTimestamp()
     })
       .catch((error) => {
@@ -31,8 +29,20 @@ export const FirebaseContextProvider = ({ children }) => {
   const sendTrackingData = (deviceID, emergency, latitude, longitude) => {
     const user = firebase.auth().currentUser
     const uid = user.uid
-    const dateTime = firebase.firestore.FieldValue.serverTimestamp()
-    firebase.firestore().collection('Tracking').add({
+    const dateTime = new Date().toLocaleString()
+
+    //Database of all emergency requests saved
+    firebase.firestore().collection('Tracking').doc(dateTime).set({
+      deviceID: deviceID,
+      emergencyType: emergency,
+      latitude: latitude,
+      longitude: longitude,
+      uid: uid,
+      createdAt: dateTime,
+    }).catch((e) => { console.log('Error at firebase.js') })
+
+    //Tracker info
+    firebase.firestore().collection('Recent').doc(uid).set({
       deviceID: deviceID,
       emergencyType: emergency,
       latitude: latitude,
@@ -51,13 +61,13 @@ export const FirebaseContextProvider = ({ children }) => {
       firebase.firestore().collection("MAccept").where("userID", "==", uid).where("ETA", "!=", "null")
         .onSnapshot((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-
             const time = doc.data().ETA;
             ctd(time);
 
-          });
+          })
 
         });
+
     }//Medical Handled here
 
 
@@ -72,7 +82,7 @@ export const FirebaseContextProvider = ({ children }) => {
 
           });
 
-        });
+        })
     }//Fire Handled here
 
 
@@ -87,57 +97,52 @@ export const FirebaseContextProvider = ({ children }) => {
 
           });
 
-        });
+        })
     }
 
   }
 
-  const getName = async () => {
+
+  //Use it to reset eta listener
+  const closePreviousQuery = (dept) => {
+    const user = firebase.auth().currentUser
+    const uid = user.uid
+    if (dept == 'Medical') {
+      firebase.firestore().collection("MAccept").doc(uid).update({
+        ETA: null
+      })
+
+
+    }//Medical Handled here
+
+
+
+    else if (dept == 'Fire') {
+      firebase.firestore().collection("FAccept").doc(uid).update({
+        ETA: null
+      })
+    }//Fire Handled here
+
+
+
+    else if (dept == 'Security') {
+      firebase.firestore().collection("SAccept").doc(uid).update({
+        ETA: null
+      })
+    }
+  }
+
+  const getInfo = async (sendData) => {
     const user = firebase.auth().currentUser
     const uid = user.uid
     const data = [];
     await firebase.firestore().collection('Users').doc(uid).get().then((docs) => {
       data.push(docs.data().name)
-    });
-    return data
-  }
-
-  const getAge = () => {
-    const user = firebase.auth().currentUser
-    const uid = user.uid
-    const data = [];
-    firebase.firestore().collection('Users').doc(uid).get().then((docs) => {
       data.push(docs.data().age)
-    });
-    return data
-  }
-
-  const getEcontactname = () => {
-    const user = firebase.auth().currentUser
-    const uid = user.uid
-    const data = [];
-    firebase.firestore().collection('Users').doc(uid).get().then((docs) => {
       data.push(docs.data().emcContactName)
-    });
-    return data
-  }
-
-  const getEnumber = () => {
-    const user = firebase.auth().currentUser
-    const uid = user.uid
-    const data = [];
-    firebase.firestore().collection('Users').doc(uid).get().then((docs) => {
       data.push(docs.data().emcContactNumber)
-    });
-    return data
-  }
-
-  const getPremed = () => {
-    const user = firebase.auth().currentUser
-    const uid = user.uid
-    const data = [];
-    firebase.firestore().collection('Users').doc(uid).get().then((docs) => {
       data.push(docs.data().medCondition)
+      sendData(data)
     });
     return data
   }
@@ -148,12 +153,9 @@ export const FirebaseContextProvider = ({ children }) => {
       value={{
         sendTrackingData,
         storeUserData,
-        getName,
-        getAge,
-        getEcontactname,
-        getEnumber,
-        getPremed,
-        displayCountDown
+        getInfo,
+        displayCountDown,
+        closePreviousQuery,
       }}
     >
       {children}

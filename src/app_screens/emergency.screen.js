@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import {
   Text,
   View,
@@ -8,6 +8,7 @@ import {
   Vibration,
   Alert,
   TouchableWithoutFeedback,
+  BackHandler
 } from 'react-native';
 import LottieView from "lottie-react-native";
 import * as Location from 'expo-location';
@@ -16,16 +17,20 @@ import NetInfo from "@react-native-community/netinfo";
 
 
 //import from local files
+import { FirebaseContext } from '../app_services/firebase.services/firebase'
 import { Card } from '../app_components/Card';
 import { SafeArea } from '../app_utils/safe-area.component'
 import { fontSizes, marginSizes } from '../app_utils/sizes';
 
 export const EmergencyScreen = ({ navigation }) => {
-
+  const { closePreviousQuery } = useContext(FirebaseContext)
 
   const checkInternet = async () => {
     const response = await NetInfo.fetch();
     if (response.isConnected) {
+      closePreviousQuery('Medical')
+      closePreviousQuery('Fire')
+      closePreviousQuery('Security')
       vibrate()
       navigation.navigate("EmergencySelector")
     }
@@ -53,6 +58,24 @@ export const EmergencyScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
+    const backAction = () => {
+      Alert.alert('Hold on!', 'Are you sure you want to exit?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'YES', onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
+
+  useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -61,6 +84,7 @@ export const EmergencyScreen = ({ navigation }) => {
       }
     })();
   }, []);
+
 
   return (
     <SafeArea>
@@ -80,7 +104,7 @@ export const EmergencyScreen = ({ navigation }) => {
                 checkInternet()
               }}>
               <LottieView
-                source={require("../../assets/button.json")}
+                source={require("../../assets/sosbutton.json")}
                 key="animation"
                 autoPlay
                 resizeMode='contain'
@@ -95,9 +119,9 @@ export const EmergencyScreen = ({ navigation }) => {
         </Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <Card name="Security" tel="09031335884" spacing={0} />
-            <Card name="Medic" tel="08052604937" spacing={24} />
-            <Card name="Fire" tel="08050799378" spacing={24} />
+            <Card name="Security" tel="07016893769" spacing={0} />
+            <Card name="Medic" tel="08028190599" spacing={24} />
+            <Card name="Fire" tel="09091085365" spacing={24} />
           </View>
         </View>
       </ImageBackground>
@@ -126,24 +150,25 @@ const styles = StyleSheet.create({
     margin: marginSizes.xsm,
     marginBottom: marginSizes.sm,
     fontFamily: 'Oswald_400Regular',
-
     fontSize: fontSizes.lg,
-    fontWeight: 'bold',
     textAlign: 'center',
+    color: 'green'
   },
   textTitle2: {
     fontSize: fontSizes.smd,
     textAlign: 'center',
+    color: 'green'
   },
   text: {
     fontSize: fontSizes.smd,
     textAlign: 'center',
-    color: "gray",
+    color: "black",
+    fontFamily: 'Oswald_400Regular',
   },
   text2: {
     fontSize: fontSizes.sm,
     textAlign: 'center',
-    color: "gray",
+    color: "black",
   },
 
   animated: {

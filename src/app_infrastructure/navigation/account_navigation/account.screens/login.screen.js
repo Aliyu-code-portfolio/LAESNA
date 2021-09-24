@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { View, ImageBackground } from 'react-native';
+import { View, ImageBackground, Alert } from 'react-native';
 import {
     AuthButton,
     AuthInput,
@@ -58,7 +58,29 @@ export const LoginScreen = ({ navigation }) => {
                         <AuthButton
                             icon="lock-open-outline"
                             mode="contained"
-                            onPress={() => onLogin(email, password)}
+                            onPress={() => {
+                                if (email == 'medical@abu.edu.ng' || email == 'fire@abu.edu.ng' || email == 'security@abu.edu.ng') {
+                                    Alert.alert(
+                                        "Access Denied",
+                                        "It appears you are logging in with the wrong app",
+                                        [
+                                            {
+                                                text: "Ok",
+                                                style: "cancel",
+                                                onPress: () => {
+
+                                                }
+                                            }
+                                        ]
+                                    );
+                                }
+
+
+                                else {
+                                    onLogin(email, password)
+                                }
+                            }
+                            }
                         >
                             Login
                         </AuthButton>

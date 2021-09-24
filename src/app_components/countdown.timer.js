@@ -6,7 +6,7 @@ import { fontSizes, paddingSizes } from '../app_utils/sizes';
 
 
 const minutesToMillis = (min) => min * 60 * 1000;
-const formatTime = (time) => (time < 10 ? ('0${time}') : time);
+const formatTime = (time) => (time < 10 ? (`0${time}`) : time);
 // return {formatTime(minute)}:{formatTime(second)}
 export const Countdown = ({ minutes = 20, onEnd }) => {
     const interval = React.useRef(null);
@@ -38,9 +38,9 @@ export const Countdown = ({ minutes = 20, onEnd }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Expected Time of Arrival {minutes} minutes
+            <Text style={styles.text}>Expected Time of Arrival is {minutes} minutes
         </Text>
-            <Text style={{ textAlign: 'center', }}>The emergency team will arrive in {minutes} minutes Please remain calm while help arrive</Text>
+            <Text style={{ textAlign: 'center', fontFamily: 'Oswald_400Regular', }}>Please remain calm while help arrive. {'\n'} {formatTime(minute)}:{formatTime(second)}</Text>
         </View>
     );
 };
@@ -50,15 +50,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '80%',
         height: '40%',
-        elevation: 10,
-        backgroundColor: '#efefef'
+        elevation: 30,
+        backgroundColor: '#efefef',
+        borderRadius: 5
     },
     text: {
         fontSize: fontSizes.lg,
-        fontWeight: 'bold',
+        fontFamily: 'Oswald_400Regular',
         color: 'black',
         textAlign: 'center',
-        fontWeight: 'bold',
         padding: paddingSizes.l,
     },
 });

@@ -47,7 +47,7 @@ export const Card = ({ name, tel, spacing }) => {
   );
 };
 
-const styles =(spacing)=> StyleSheet.create({
+const styles = (spacing) => StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -57,11 +57,12 @@ const styles =(spacing)=> StyleSheet.create({
     marginLeft: spacing,
     marginTop: marginSizes.md,
     borderRadius: 10,
-    borderColor: colors.red,
+    borderColor: 'green',
     borderWidth: 1,
   },
-  textColor:{
-    color: 'gray'
+  textColor: {
+    color: 'green',
+    fontFamily: 'Oswald_400Regular',
   },
   image: {
     width: 50,

@@ -15,31 +15,19 @@ import { FirebaseContext } from '../app_services/firebase.services/firebase'
 import { fontSizes } from '../app_utils/sizes'
 
 export const EmergencySelector = ({ navigation }) => {
-  const { sendTrackingData, displayCountDown } = useContext(FirebaseContext)
+  const { sendTrackingData, displayCountDown, closePreviousQuery } = useContext(FirebaseContext)
+  const [emc, setEmc] = useState('')
   const [indicator, setIndicator] = useState(false);
   const [time, setTime] = useState(null);
 
   const sendDistress = async (emergency) => {
+    vibrate()
     setIndicator(true);
-    // Alert.alert(
-    //   "Sent Your Request",
-    //   "Your location have been sent to " + emergency + " dapartment. Please stay in this screen to get an expected time of arrival",
-    //   [
-    //     {
-    //       text: "Ok",
-    //       style: "cancel",
-    //       onPress: () => {
-    //         displayCountDown(emergency, getETA);
-    //       }
-    //     }
-    //   ]
-    // );
     const myDevice = getDeviceID();
     getLocation(processData, myDevice, emergency);
 
   }
   const processData = (locateData, device, emg) => {
-    console.log(locateData)
     if (locateData.coords) {
       const latitude = locateData.coords.latitude
       const longitude = locateData.coords.longitude
@@ -93,9 +81,9 @@ export const EmergencySelector = ({ navigation }) => {
     setTime(parseInt(eta));
   }
   const onCountEnd = () => {
+    closePreviousQuery(emc)
     navigation.goBack()
   }
-
   return (
 
     <View style={styles.container}>{time ? (<Countdown minutes={time} onEnd={onCountEnd} />)
@@ -105,24 +93,24 @@ export const EmergencySelector = ({ navigation }) => {
       (<><View style={{ width: '3%', height: '3%', paddingBottom: 20 }}>
         <BallIndicator color='orange' size={25} animating={indicator} />
       </View>
-        <Text style={{ paddingBottom: 10, fontWeight: 'bold', fontSize: fontSizes.lg }} >Choose</Text>
+        <Text style={{ paddingBottom: 10, fontWeight: 'bold', fontSize: fontSizes.lg }} >Choose Your Emergency</Text>
         <View>
           <View style={styles.imgContainer}>
-            <TouchableOpacity onPress={() => sendDistress('Security')}
+            <TouchableOpacity onPress={() => { sendDistress('Security'); setEmc('Security') }}
             >
               <Image source={require('../../assets/security.png')} style={styles.img} />
               <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold' }}>Security</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.imgContainer}>
-            <TouchableOpacity onPress={() => sendDistress('Medical')}
+            <TouchableOpacity onPress={() => { sendDistress('Medical'); setEmc('Medical') }}
             >
               <Image source={require('../../assets/medic.png')} style={styles.img} />
               <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold' }}>Medic</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.imgContainer}>
-            <TouchableOpacity onPress={() => sendDistress('Fire')}
+            <TouchableOpacity onPress={() => { sendDistress('Fire'); setEmc('Fire') }}
             >
               <Image source={require('../../assets/fire.png')} style={styles.img} />
               <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold' }}>Fire</Text>
@@ -141,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 5,
-    backgroundColor: '#efefef',
+    backgroundColor: 'green',
   },
   imgContainer: {
     justifyContent: 'center',

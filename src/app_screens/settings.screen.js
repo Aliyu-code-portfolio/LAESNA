@@ -10,24 +10,35 @@ import { SafeArea } from '../app_utils/safe-area.component'
 
 export const Settings = () => {
   const { onLogout } = useContext(AuthenticationContext);
-  const { getName, getAge, getEcontactname, getEnumber, getPremed } = useContext(FirebaseContext);
+  const { getInfo } = useContext(FirebaseContext);
   //Information
 
-  const [fname, setfname, fnameRef] = useState(getName())
-  const [age, setage, ageRef] = useState(getAge())
-  const [econtactname, setecontactname, econtactnameRef] = useState(getEcontactname())
-  const [enumber, setenumber, enumberRef] = useState(getEnumber())
-  const [premed, setpremed, premedRef] = useState(getPremed())
+  const [fname, setfname] = useState('Please wait...')
+  const [age, setage] = useState('Please wait...')
+  const [econtactname, setecontactname] = useState('Please wait...')
+  const [enumber, setenumber] = useState('Please wait...')
+  const [premed, setpremed] = useState('Please wait...')
 
+  const processData = (info) => {
+    setfname(info[0])
+    setage(info[1])
+    setecontactname(info[2])
+    setenumber(info[3])
+    setpremed(info[4])
+  }
+
+  useEffect(() => {
+    getInfo(processData)
+  }, [])
   return (
     <SafeArea>
       <View style={styles.container}>
         <View style={styles.pictureLogout}>
           <View>
             <ProfileImage />
-            <Text style={{ textAlign: 'center', marginVertical: 20, fontSize: 16, fontWeight: 'bold' }}>{fnameRef.current[0]}</Text>
+            <Text style={{ textAlign: 'center', marginVertical: 20, fontSize: 16, fontWeight: 'bold' }}>{fname}</Text>
           </View>
-          <View style={{ position: 'absolute', top: 0, right: 0, elevation: 40, }}>
+          <View style={{ position: 'absolute', top: 0, right: 0, elevation: 40, padding: 10 }}>
             <TouchableOpacity style={{ borderRadius: 10, width: 45, }}
               onPress={() => {
                 onLogout()
@@ -43,7 +54,7 @@ export const Settings = () => {
                 <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'black', paddingBottom: 3 }}>My Age:</Text>
                 <TouchableOpacity
                 >
-                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{ageRef.current[0]}</Text>
+                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{age}</Text>
                 </TouchableOpacity
                 >
               </View>
@@ -51,7 +62,7 @@ export const Settings = () => {
                 <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'black', paddingBottom: 3 }}>Next of Kin:</Text>
                 <TouchableOpacity
                 >
-                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{econtactnameRef.current[0]}</Text>
+                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{econtactname}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -61,14 +72,14 @@ export const Settings = () => {
                 <TouchableOpacity
                 >
 
-                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{enumberRef.current[0]}</Text>
+                  <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{enumber}</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.imgContainer}>
                 <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'black', paddingBottom: 3 }}>Have pemedical conditions:</Text>
                 <TouchableOpacity
                 >
-                  <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{premedRef.current[0]}</Text>
+                  <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold', color: 'white' }}>{premed}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -98,9 +109,9 @@ const styles = StyleSheet.create({
   curve: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightblue',
+    backgroundColor: 'green',
     height: Dimensions.get('window').height * 0.8,
-    borderRadius: 25
+    borderTopEndRadius: 50
   },
   imgContainer: {
     justifyContent: 'center',

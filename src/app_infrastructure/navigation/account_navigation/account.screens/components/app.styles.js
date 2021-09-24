@@ -8,6 +8,8 @@ export const AuthButton = styled(Button).attrs({
   color: colors.brand.primary,
 })`
   padding: ${(props) => props.theme.space[2]};
+  width: 150px;
+  height: 50px;
 `;
 export const AuthInput = styled(TextInput)`
   width: 260px;
