@@ -1,7 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { NavigationContainer } from "@react-navigation/native";
 
 import { Settings } from '../../../app_screens/settings.screen'
 import { Chat } from '../../../app_screens/chat.screen'
@@ -25,16 +24,14 @@ const createScreenOptions = ({ route }) => {
 };
 
 export const AppNavigator = () => (
-  <NavigationContainer>
-    <Tab.Navigator
-      screenOptions={createScreenOptions}
-      tabBarOptions={{
-        activeTintColor: 'red',
-        inactiveTintColor: 'gray',
-      }}>
-      <Tab.Screen name="Home" component={EmergencyNavigator} />
-      <Tab.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
-      <Tab.Screen name="Settings" component={Settings} />
-    </Tab.Navigator>
-  </NavigationContainer>
+  <Tab.Navigator
+    screenOptions={createScreenOptions}
+    tabBarOptions={{
+      activeTintColor: 'red',
+      inactiveTintColor: 'gray',
+    }}>
+    <Tab.Screen name="Home" component={EmergencyNavigator} options={{ headerShown: false }} />
+    <Tab.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+    <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false }} />
+  </Tab.Navigator>
 )

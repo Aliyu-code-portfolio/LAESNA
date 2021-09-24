@@ -1,54 +1,71 @@
-import React, { useState, useEffect } from 'react'
-import { Text, TextInput, View, StyleSheet, Image, Alert, TouchableOpacity, Vibration } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
+import { Text, View, StyleSheet, Image, Alert, TouchableOpacity, Vibration } from 'react-native'
 import ConnectivityManager from "react-native-connectivity-status"
+//import LocationEnabler from 'react-native-location-enabler';
+import Expo from 'expo';
 
+//import { ActivityIndicator, Colors } from "react-native-paper";
+import {
+  BallIndicator,
+} from 'react-native-indicators';
+
+import { Countdown } from '../app_components/countdown.timer'
 import { getDeviceID, getLocation } from '../app_services/location.services/location.scan'
-import { sendTrackingData } from '../app_services/firebase.services/firebase'
-import { SafeArea } from '../app_utils/safe-area.component'
+import { FirebaseContext } from '../app_services/firebase.services/firebase'
+import { fontSizes } from '../app_utils/sizes'
 
-export const EmergencySelector = ({ route }) => {
+export const EmergencySelector = ({ navigation }) => {
+  const { sendTrackingData, displayCountDown, closePreviousQuery } = useContext(FirebaseContext)
+  const [emc, setEmc] = useState('')
+  const [indicator, setIndicator] = useState(false);
+  const [time, setTime] = useState(null);
 
   const sendDistress = async (emergency) => {
+    vibrate()
+    setIndicator(true);
     const myDevice = getDeviceID();
-    const myLocation = getLocation();
-    setTimeout(function () {
-      //Help prevent sending error data due to location service been off
-      if (myLocation._W) {
-        const latitude = myLocation._W.coords.latitude
-        const longitude = myLocation._W.coords.longitude
-        const status = sendTrackingData(myDevice, emergency, latitude, longitude);
-        //Simple display confirming help is coming
-        if (status) {
-          Alert.alert(
-            "Sent",
-            "Your location have been sent to " + emergency + " dapartment. Please remain calm while help arrive",
-            [
-              {
-                text: "Ok",
-                style: "cancel"
-              }
-            ]
-          );
+    getLocation(processData, myDevice, emergency);
 
-        }
-
-      }
-      else {
+  }
+  const processData = (locateData, device, emg) => {
+    if (locateData.coords) {
+      const latitude = locateData.coords.latitude
+      const longitude = locateData.coords.longitude
+      const status = sendTrackingData(device, emg, latitude, longitude);
+      //Simple display confirming help is coming
+      if (status) {
+        setIndicator(false);
         Alert.alert(
-          "We couldn't track your location",
-          "This could be due to LAESNA not been granted permission to access your device's location. Please accept permissions and turn on location and try again",
+          "Sent Your Request",
+          "Your location have been sent to " + emg + " dapartment. Please stay in this screen to get an expected time of arrival",
           [
             {
               text: "Ok",
-              style: "cancel"
+              style: "cancel",
+              onPress: () => {
+                displayCountDown(emg, getETA);
+              }
             }
           ]
         );
 
       }
 
-    }, 2300);
-    vibrate()
+    }
+    else {
+      setIndicator(false);
+      Alert.alert(
+        "We couldn't track your location",
+        "This could be due to LAESNA not been granted permission to access your device's location. Please accept permissions and turn on location and try again",
+        [
+          {
+            text: "Ok",
+            style: "cancel"
+          }
+        ]
+      );
+
+    }
   }
 
   const vibrate = () => {
@@ -60,41 +77,78 @@ export const EmergencySelector = ({ route }) => {
     }
   };
 
+  const getETA = (eta) => {
+    setTime(parseInt(eta));
+  }
+  const onCountEnd = () => {
+    closePreviousQuery(emc)
+    navigation.goBack()
+  }
   return (
-    <SafeArea>
-      <View style={styles.container}>
-        <View style={styles.imgContainer1}>
-          <TouchableOpacity onPress={() => sendDistress()}
-          >
-            <Image source={require('../../assets/edit.png')} style={styles.img} />
-            <Text style={{ paddingTop: 10, }}>Edit Your Details</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeArea>
-  )
 
+    <View style={styles.container}>{time ? (<Countdown minutes={time} onEnd={onCountEnd} />)
+
+      :
+
+      (<><View style={{ width: '3%', height: '3%', paddingBottom: 20 }}>
+        <BallIndicator color='orange' size={25} animating={indicator} />
+      </View>
+        <Text style={{ paddingBottom: 10, fontWeight: 'bold', fontSize: fontSizes.lg }} >Choose Your Emergency</Text>
+        <View>
+          <View style={styles.imgContainer}>
+            <TouchableOpacity onPress={() => { sendDistress('Security'); setEmc('Security') }}
+            >
+              <Image source={require('../../assets/security.png')} style={styles.img} />
+              <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold' }}>Security</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.imgContainer}>
+            <TouchableOpacity onPress={() => { sendDistress('Medical'); setEmc('Medical') }}
+            >
+              <Image source={require('../../assets/medic.png')} style={styles.img} />
+              <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold' }}>Medic</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.imgContainer}>
+            <TouchableOpacity onPress={() => { sendDistress('Fire'); setEmc('Fire') }}
+            >
+              <Image source={require('../../assets/fire.png')} style={styles.img} />
+              <Text style={{ paddingTop: 10, textAlign: 'center', fontWeight: 'bold' }}>Fire</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </>)}
+
+    </View>
+  )
 }
 const styles = StyleSheet.create({
 
   container: {
-    paddingTop: 10,
-    paddingLeft: 20,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 5,
+    backgroundColor: 'green',
   },
-  imgContainer1: {
-    elevation: 2,
+  imgContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    elevation: 16,
     height: 110,
     width: 110,
-    backgroundColor: '#efefef',
+    backgroundColor: 'white',
     position: 'relative',
-    borderRadius: 999,
+    borderRadius: 10,
+    borderColor: 'black',
     overflow: 'hidden',
   },
   img: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
+    resizeMode: 'stretch',
   },
-
   text: {
     fontWeight: 'bold',
   }
