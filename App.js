@@ -17,13 +17,13 @@ import { Navigation } from './src/app_infrastructure/navigation/account_navigati
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC5JP7q6d4M21jrcA7R1zh6-NgtFlQMMBI",
-  authDomain: "laesna-d7c83.firebaseapp.com",
-  projectId: "laesna-d7c83",
-  storageBucket: "laesna-d7c83.appspot.com",
-  messagingSenderId: "955485269180",
-  appId: "1:955485269180:web:14aab9eb2f5901441ab4b9",
-  measurementId: "G-HKHC0TB3WJ"
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: "",
+  measurementId: ""
 };
 
 if (!firebase.apps.length) {
