@@ -20,8 +20,11 @@ After successfully logging in, Users are prompted for permission to use their de
 
 # LAESNA Activity Screen
 <img src="https://user-images.githubusercontent.com/88856370/183687208-e4354bf9-ebaf-4923-b92e-a5b900404ead.jpg" width="200" height="450"/>
-The activity screen gives user two options to contact the emergency team
+The activity screen gives user two options to contact the emergency teams
 
 - By making a phone call directly to the emergency team dispatcher and then giving details of the type of emergency you are in as well as your location.
 
 - By pressing and holding the animated panic button then LAESNA will do it's magic and send your accurate location to the specified emergency team in seconds.
+# LAESNA Chat Screen
+<img src="https://user-images.githubusercontent.com/88856370/183692405-14503566-68bf-45d6-9740-df561d4e01ff.jpg" width="200" height="450"/>
+
