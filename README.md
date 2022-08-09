@@ -36,4 +36,9 @@ After a User presses the animated panic buttton this screen shows up to confirm 
 ## Location Sent
 <img src="https://user-images.githubusercontent.com/88856370/183697680-5af0bc76-3ccc-45f5-939b-2ad0a93dc267.jpg" width="200" height="450"/>
 
-## Estimated Arrival Time
+## Estimated Arrival Time (ETA)
+<img src="https://user-images.githubusercontent.com/88856370/183702309-719c3dc6-993b-45e5-bbc7-f03c3763eefa.jpg" width="200" height="450"/>
+After a user request is sent, the emergency team dispatcher send back an ETA to the user
+
+
+
