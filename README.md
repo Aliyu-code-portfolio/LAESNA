@@ -17,3 +17,11 @@ This is the first user interface new users encounters. Users can navigate betwee
 # Permission Request
 <img src="https://user-images.githubusercontent.com/88856370/183685991-2c8b97ec-4131-4a06-8fcc-1b49eca2b49b.jpg" width="200" height="450"/>
 After successfully logging in, Users are prompted for permission to use their device location, this must be accepted for LAESNA to get the exact location of a User during an emergency
+
+# LAESNA Activity Screen
+<img src="https://user-images.githubusercontent.com/88856370/183687208-e4354bf9-ebaf-4923-b92e-a5b900404ead.jpg" width="200" height="450"/>
+The activity screen gives user two options to contact the emergency team
+
+- By making a phone call directly to the emergency team dispatcher and then giving details of the type of emergency you are in as well as your location.
+
+- By pressing and holding the animated panic button then LAESNA will do it's magic and send your accurate location to the specified emergency team in seconds.
